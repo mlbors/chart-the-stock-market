@@ -26,11 +26,13 @@ const ChartsHandler = (id) => {
    * @var String _id chart's id
    * @var Object _ctx context
    * @var Object _chart the chart
+   * @var Object _socket
    */
 
   let _id = id
   let _ctx = $('#' + _id)
   let _chart
+  let _socket = io.connect(window.location.origin)
 
   /************************************************************/
   /************************************************************/
@@ -155,11 +157,37 @@ const ChartsHandler = (id) => {
     data.datasets[0].borderColor = colors
     data.datasets[0].borderWidth = 1
 
+    console.log(data)
+
     _chart = new Chart(_ctx, {
       type: 'line',
       data: data
     })
 
+  }
+
+  /************************************************************/
+  /************************************************************/
+
+  /**********/
+  /********** HANDLE LIST **********/
+  /**********/
+
+  /*
+   * @return Promise
+   */
+
+  _handleList = () => {
+    return new Promise((resolve) => {
+      if ($('#stocks-list').length > 0) {
+        resolve()
+        return
+      }
+      $('#no-stocks').hide()
+      $('#stocks-options').after('<div class="row"><div class="col-md-12"><ul id="stocks-list"></ul></div></div>')
+      resolve()
+      return
+    })
   }
 
   /************************************************************/
@@ -182,7 +210,13 @@ const ChartsHandler = (id) => {
     }
     str +='</li>'
 
-    $('#stocks-list').append(str)
+    _handleList().then(() => {
+      $('#stocks-list').append(str)
+      return
+    }).catch((err) => {
+      console.warn('Error while updating list...')
+      console.error(err)
+    })
   }
 
   /************************************************************/
@@ -198,6 +232,11 @@ const ChartsHandler = (id) => {
 
   _removeListItem = (stock) => {
     ('#stocks-list li#' + stock).remove()
+
+    if ($('#stocks-list').length === 0) {
+      $('#stocks-list').hide()
+      $('#no-stocks').show()
+    }
   }
 
   /************************************************************/
@@ -237,7 +276,7 @@ const ChartsHandler = (id) => {
   /**********/
 
   _listenAddEvent = () => {
-    socket.on('add', (data) => {
+    _socket.on('add', (data) => {
       _updateList('add', data.stock, data.auth)
       _updateChart(data.stock, data.data) 
     })
@@ -251,7 +290,7 @@ const ChartsHandler = (id) => {
   /**********/
 
   _listenRemoveEvent = () => {
-    socket.on('delete', (data) => {
+    _socket.on('delete', (data) => {
       _updateList('delete', data.stock, data.auth)
       _removeElement(data.stock, data.data) 
     })
@@ -292,17 +331,19 @@ const ChartsHandler = (id) => {
     generateChart: () => {
       _getData().then((data) => {
 
-          if (data.error !== null) {
-            console.warn('Error during chart generation...')
-            console.error(data.error)
-            return false
-          }
+        if (data.error !== null) {
+          console.warn('Error during chart generation...')
+          console.error(data.error)
+          return false
+        }
 
         _displayChart(data.chartData)
+        return
         
       }).catch((err) => {
         console.warn('Error during chart generation...')
         console.error(err)
+        return false
       })
     }
       

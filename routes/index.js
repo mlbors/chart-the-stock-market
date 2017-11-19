@@ -18,6 +18,7 @@ var router = express.Router()
 const auth = require('./auth')
 const logout = require('./logout')
 const stocks = require('./stocks')
+const dbStocks = require('../db/stocks')
 
 /************************************************************/
 /************************************************************/
@@ -26,11 +27,32 @@ const stocks = require('./stocks')
 /***** HOME *****/
 /****************/
 
-router.get('/', (req, res, next) => {
-  res.render('index', {
-    title: 'Stocks',
-    auth: req.isAuthenticated()
+router.get('/', (req, res) => {
+
+  dbStocks.findAll((err, results) => {
+    
+    let chartData, chartLabels
+
+    if (typeof results !== 'undefined' && results !== null && results !== '') {
+      chartData = results.map((d) => d.data)
+      chartLabels = results.map((d) => d.name)
+    }
+
+    res.render('index', {
+      title: 'Stocks',
+      auth: req.isAuthenticated(),
+      error: err,
+      chartData: {
+        datasets:[{
+          data: chartData
+        }],
+        labels: chartLabels
+      },
+      stocks: chartLabels
+    })
+
   })
+  
 })
 
 /************************************************************/

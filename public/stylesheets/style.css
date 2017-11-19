@@ -54,6 +54,7 @@ img.responsive-image {
 
 #main #message-info {
   display: none;
+  padding: 15px;
 }
 
 #footer {

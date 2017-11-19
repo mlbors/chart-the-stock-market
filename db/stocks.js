@@ -43,18 +43,18 @@ const self = module.exports = {
 
   findAll: (callback) => {
     
-      MongoClient.connect(dbUrl, (err, db) => {
+    MongoClient.connect(dbUrl, (err, db) => {
+    
+      if (err) return callback(err)
       
+      db.collection('stocks')
+      .find({})
+      .sort({'date': -1})
+      .toArray((err, result) => {
         if (err) return callback(err)
-        
-        db.collection('stocks')
-        .find({})
-        .sort({'date': -1})
-        .toArray((err, result) => {
-          if (err) return callback(err)
-          db.close()
-          return callback(null, result)
-        })
+        db.close()
+        return callback(null, result)
+      })
 
     })
 
@@ -157,7 +157,7 @@ const self = module.exports = {
         _id: shortid.generate(),
         date: new Date(),
         name: name,
-        data: stock.data
+        data: data
       },
       (err, res) => {
         db.close()
@@ -215,7 +215,7 @@ const self = module.exports = {
    * @var Function callback a callback function
    */
 
-  deleteStock: (callback) => {
+  deleteAll: (callback) => {
     
     MongoClient.connect(dbUrl, (err, db) => {
 

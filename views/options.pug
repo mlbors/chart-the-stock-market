@@ -1,4 +1,4 @@
-div.row
+div(id='stocks-options' class='row')
   div.col-md-12
     if auth
       div(id='add-stock-container')
@@ -15,9 +15,9 @@ div.row
     if (stocks && stocks.length)
       ul(id='stocks-list')
         each stock in stocks
-          li(id=stock.name)
-            | #{stock.name}
+          li(id=stock)
+            | #{stock}
             if auth
-              a(class='btn btn-default action' href='#' data-action='delete' data-stock=stock.name) Remove stock
+              a(class='btn btn-default action' href='#' data-action='delete' data-stock=stock) Remove stock
     else
-      p No stocks!
+      p(id='no-stocks') No stocks!

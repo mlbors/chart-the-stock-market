@@ -43,7 +43,8 @@ router.get('/', (req, res) => {
           data: chartData
         }],
         labels: chartLabels
-      }
+      },
+      stocks: chartLabels
     })
 
   })
@@ -123,8 +124,11 @@ router.post('/add', (req, res) => {
 
 router.delete('/delete', (req, res) => {
 
+  const data = JSON.parse(req.body.data)
+  const stock = data.stock
+
   dbStocks.findByName(stock, (err, result) => {
-    dbStocks.deleteStock(req.body.data.stock, (err, info) => {
+    dbStocks.deleteStock(stock, (err, info) => {
       res.send({
         data: result.data,
         info: info,
