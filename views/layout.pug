@@ -1,0 +1,49 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+  body
+
+    div.header
+
+      nav.navbar.navbar-default
+        div.container
+          div.navbar-header
+            button(type='button' class='navbar-toggle collapsed' data-toggle='collapse' data-target='#navbar-collapse' aria-expanded='false')
+              span.sr-only Toggle navigation
+              span.icon-bar
+              span.icon-bar
+              span.icon-bar
+            a(class='navbar-brand' href='/') Chart the Stock Market
+
+          div(class='collapse navbar-collapse' id='navbar-collapse')
+            ul.nav.navbar-nav
+              li
+                a(class='polls' href='/') Home
+              li
+                if auth
+                  a(class='logout' href='/logout') Log Out
+                else
+                  a(class='login' href='/auth/twitter') Log In
+
+    div(id='main' class='container')
+      block content
+
+    div(id='footer' class='footer')
+      div.container
+        div.row
+          div.col-md-12
+            p 
+              small Chart the Stock Market
+
+    script(src='https://code.jquery.com/jquery-3.2.1.min.js')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js')
+    script(src='/js/actions-handler.js')
+    script(src='/js/charts-handler.js')
+    script(src='/js/ui-handler.js')
+    script(src='/js/main.js')
