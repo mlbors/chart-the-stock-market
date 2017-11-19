@@ -16,7 +16,7 @@ const express = require('express')
 const router = express.Router()
 
 const dbStocks = require('../db/stocks')
-const quandleService = require('../services/quandle')
+const quandlService = require('../services/quandl')
 
 /************************************************************/
 /************************************************************/
@@ -71,7 +71,7 @@ router.post('/add', (req, res) => {
       })
     }
 
-    quandleService.getData(stock).then((results) => {
+    quandlService.getData(stock).then((results) => {
 
       if (results !== null && results.data !== null) {
         dbStocks.addStock(stock, results.data, (err, result) => {

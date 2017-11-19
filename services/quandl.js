@@ -1,6 +1,6 @@
 /**
  * freeCodeCamp - Back End Development Certification - Dynamic Web Application Projects
- * Services - Quandle
+ * Services - Quandl
  * 
  * @author MLBORS
  * @version 1.0.0.0
@@ -24,8 +24,8 @@ require('dotenv').config()
 /***** INIT *****/
 /****************/
 
-const quandleApi = {
-  api_key: process.env.QUANDLE_API_KEY,
+const quandlApi = {
+  api_key: process.env.QUANDL_API_KEY,
   api_url: 'https://www.quandl.com/api/v3/datasets/WIKI/'
 }
 
@@ -46,7 +46,7 @@ const self = module.exports = {
   getData: (stock) => {
     return new Promise((resolve, reject) => {
 
-      const url = quandleApi.api_url + stock + 'data.json?api_key=' + quandleApi.api_key
+      const url = quandlApi.api_url + stock + 'data.json?api_key=' + quandlApi.api_key
 
       request(url, (error, response, body) => {
 
