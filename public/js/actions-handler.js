@@ -38,7 +38,7 @@ const ActionsHandler = () => {
       type: type,
       cache: false,
       dataType: 'json',
-      info: {
+      data: {
         action,
         data
       },
@@ -61,8 +61,6 @@ const ActionsHandler = () => {
   _actionClick = () => {
     $(document).on('click', 'a.btn.action', (e) => {
       e.preventDefault()
-
-      console.log('action')
 
       $('#message-info').hide()
       $('#message-info').html('')
@@ -88,7 +86,7 @@ const ActionsHandler = () => {
           break
       }
 
-      _makeRequest(url, type, action, data).then((result) => {
+      _makeRequest(url, type, action, JSON.stringify(data)).then((result) => {
 
         if (result.error !== null) {
           console.warn('Error during request...')
@@ -97,6 +95,11 @@ const ActionsHandler = () => {
         }
 
         if (result.info === null) {
+
+          if (action === 'add') {
+            $('input#stock-name').val('')
+          }
+
           socket.emit(action, {
             data: result.data,
             stock: data.stock,

@@ -46,18 +46,29 @@ const self = module.exports = {
   getData: (stock) => {
     return new Promise((resolve, reject) => {
 
-      const url = quandlApi.api_url + stock + 'data.json?api_key=' + quandlApi.api_key
+      const url = quandlApi.api_url + stock + '/data.json?api_key=' + quandlApi.api_key
 
       request(url, (error, response, body) => {
 
+        const data = JSON.parse(body)
+        
         if (!error && response.statusCode == 200) {
-          const data = JSON.parse(body)
+          
+          if (data.quandl_error !== null) {
+            reject({
+              error: data.quandl_error,
+              status: response.statusCode,
+              response: response
+            })
+            return
+          }
+
           resolve(data)
           return
         }
 
         reject({
-          error: error,
+          error: data.quandl_error,
           status: response.statusCode,
           response: response
         })

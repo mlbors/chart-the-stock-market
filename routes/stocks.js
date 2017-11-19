@@ -58,7 +58,17 @@ router.get('/', (req, res) => {
 
 router.post('/add', (req, res) => {
 
-  const stock = req.body.data.stock
+  const data = JSON.parse(req.body.data)
+  const stock = data.stock
+
+  if (typeof stock === 'undefined' || stock === null || stock === '') {
+    res.send({
+      data: null,
+      info: "Can't add empty stock",
+      auth: req.isAuthenticated(),
+      error: null
+    })
+  }
 
   dbStocks.findByName(stock, (err, result) => {
 
