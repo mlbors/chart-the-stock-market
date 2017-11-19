@@ -2,17 +2,17 @@ div.row
   div.col-md-12
     if auth
       div(id='add-stock-container')
-        a(class='btn btn-default' id='display-stock-adder' href='#') Add stock
-          div(id='stock-adder')
-            label(for='stock-name') Stock name
-            input.form-control(type='text' id='stock-name' name='stock-name' placeholder='Stock name')
-            a(class='btn btn-default action' href='#' data-action='add') Add stock
+        a(class='btn btn-default display-stock-adder' id='display-stock-adder' href='#') Add stock
+        div(id='stock-adder')
+          label(for='stock-name') Stock name
+          input.form-control(type='text' id='stock-name' name='stock-name' placeholder='Stock name')
+          a(class='btn btn-default action' href='#' data-action='add') Add stock
     else
       p Please, log in to add or remove a stock market.
 
 div.row
   div.col-md-12
-    if (stocks.length)
+    if (stocks && stocks.length)
       ul(id='stocks-list')
         each stock in stocks
           li(id=stock.name)

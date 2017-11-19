@@ -48,6 +48,10 @@ img.responsive-image {
   list-style-type: none;
 }
 
+#main #stock-adder {
+  display: none;
+}
+
 #main #message-info {
   display: none;
 }

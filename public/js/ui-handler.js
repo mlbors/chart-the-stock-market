@@ -26,18 +26,16 @@ const UIHandler = () => {
   /**********/
 
   _displayStockAdder = () => {
-    return () => {
-      $(document).on('click', 'a#display-stock-adder', (e) => {
-        e.preventDefault()
+    $(document).on('click', 'a#display-stock-adder', (e) => {
+      e.preventDefault()
 
-        const target = $(e.currentTarget)
-        
-        $('#stock-adder').toggle()
+      const target = $(e.currentTarget)
+      
+      $('#stock-adder').toggle()
 
-        return false
+      return false
 
-      })
-    }
+    })
   }
 
   /************************************************************/
@@ -47,10 +45,10 @@ const UIHandler = () => {
   /********** HANDLE CLICK **********/
   /**********/
 
-  _handleClick = () => {
-
-    _displayStockAdder()
-
+  _handleUIClick = () => {
+    return () => {
+      _displayStockAdder()
+    }
   }
 
   /************************************************************/
@@ -62,7 +60,7 @@ const UIHandler = () => {
 
   return {
     init: () => {
-      const handler = _handleClick()
+      const handler = _handleUIClick()
       handler()
     }
   }

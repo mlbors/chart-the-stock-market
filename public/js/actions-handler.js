@@ -55,70 +55,83 @@ const ActionsHandler = () => {
   /************************************************************/
 
   /**********/
+  /********** ACTION CLICK **********/
+  /**********/
+
+  _actionClick = () => {
+    $(document).on('click', 'a.btn.action', (e) => {
+      e.preventDefault()
+
+      console.log('action')
+
+      $('#message-info').hide()
+      $('#message-info').html('')
+
+      const target = $(e.currentTarget)
+      const action = target.attr('data-action')
+      
+      let url = ''
+      let type = ''
+      let data = {}
+
+      switch (action) {
+        case 'add':
+          url = '/stocks/add'
+          type = 'POST'
+          data.stock = $('input#stock-name').val()
+          break
+
+        case 'delete':
+          url = '/stocks/delete'
+          type = 'DELETE'
+          data.stock = target.attr('data-stock')
+          break
+      }
+
+      _makeRequest(url, type, action, data).then((result) => {
+
+        if (result.error !== null) {
+          console.warn('Error during request...')
+          console.error(result.error)
+          return false
+        }
+
+        if (result.info === null) {
+          socket.emit(action, {
+            data: result.data,
+            stock: data.stock,
+            action: action,
+            auth: result.auth
+          })
+          return true
+        }
+
+        $('#message-info').html(result.info)
+        $('#message-info').show()
+        console.log(result.info)
+        return
+
+      }).catch((err) => {
+        console.warn('Error during request...')
+        console.error(err)
+        return false
+      })
+
+    })
+
+  }
+
+   /************************************************************/
+  /************************************************************/
+
+  /**********/
   /********** HANDLE CLICK **********/
   /**********/
 
-  _handleClick = () => {
+  _handleActionsClick = () => {
     return () => {
-      $(document).on('click', 'a.btn.action', (e) => {
-        e.preventDefault()
-
-        $('#message-info').hide()
-        $('#message-info').html('')
-
-        const target = $(e.currentTarget)
-        const action = target.attr('data-action')
-        
-        let url = ''
-        let type = ''
-        let data = {}
-
-        switch (action) {
-          case 'add':
-            url = '/stocks/add'
-            type = 'POST'
-            data.stock = $('input#stock-name').val()
-            break
-
-          case 'delete':
-            url = '/stocks/delete'
-            type = 'DELETE'
-            data.stock = target.attr('data-stock')
-            break
-        }
-
-        _makeRequest(url, type, action, data).then((result) => {
-
-          if (result.error !== null) {
-            console.warn('Error during request...')
-            console.error(result.error)
-            return false
-          }
-
-          if (result.info === null) {
-            socket.emit(action, {
-              data: result.data,
-              stock: data.stock,
-              action: action,
-              auth: result.auth
-            })
-            return true
-          }
-
-          $('#message-info').html(result.info)
-          $('#message-info').show()
-          console.log(result.info)
-          return
-
-        }).catch((err) => {
-          console.warn('Error during request...')
-          console.error(err)
-          return false
-        })
-
-      })
+      _actionClick()
     }
-
   }
 
   /************************************************************/
@@ -130,7 +143,7 @@ const ActionsHandler = () => {
 
   return {
     init: () => {
-      const handler = _handleClick()
+      const handler = _handleActionsClick()
       handler()
     }
   }
