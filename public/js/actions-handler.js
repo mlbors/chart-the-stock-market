@@ -18,6 +18,12 @@ const ActionsHandler = () => {
   /********** VARS **********/
   /**********/
 
+  /*
+   * @var Object _socket
+   */
+
+  let _socket = io.connect(window.location.origin)
+
   /************************************************************/
   /************************************************************/
 
@@ -97,10 +103,11 @@ const ActionsHandler = () => {
         if (result.info === null) {
 
           if (action === 'add') {
+            $('#stock-adder').hide()
             $('input#stock-name').val('')
           }
 
-          socket.emit(action, {
+          _socket.emit(action, {
             data: result.data,
             stock: data.stock,
             action: action,

@@ -205,8 +205,9 @@ const ChartsHandler = (id) => {
   _addListItem = (stock, auth) => {
 
     let str = '<li id=' + stock + '>'
+    str += stock
     if (auth) {
-      str = '<a class="btn btn-default action" href="#" data-action="remove" data-stock="' + stock + '">' + stock + '</a>'
+      str += '<a class="btn btn-default action" href="#" data-action="delete" data-stock="' + stock + '">Remove stock</a>'
     }
     str +='</li>'
 
@@ -231,7 +232,7 @@ const ChartsHandler = (id) => {
    */
 
   _removeListItem = (stock) => {
-    ('#stocks-list li#' + stock).remove()
+    $('#stocks-list li#' + stock).remove()
 
     if ($('#stocks-list').length === 0) {
       $('#stocks-list').hide()

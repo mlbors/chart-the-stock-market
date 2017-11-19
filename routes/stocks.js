@@ -88,19 +88,19 @@ router.post('/add', (req, res) => {
         dbStocks.addStock(stock, results.data, (err, result) => {
           res.send({
             data: results.data,
-            info: results,
+            info: null,
             auth: req.isAuthenticated(),
             error: err
           })
         })
+      } else {
+        res.send({
+          data: null,
+          info: 'Nothing to add',
+          auth: req.isAuthenticated(),
+          error: err
+        })
       }
-
-      res.send({
-        data: null,
-        info: 'Nothing to add',
-        auth: req.isAuthenticated(),
-        error: err
-      })
 
     }).catch((err) => {
       res.send({
@@ -131,7 +131,7 @@ router.delete('/delete', (req, res) => {
     dbStocks.deleteStock(stock, (err, info) => {
       res.send({
         data: result.data,
-        info: info,
+        info: null,
         auth: req.isAuthenticated(),
         error: err
       })

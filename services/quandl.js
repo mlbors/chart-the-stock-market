@@ -14,6 +14,7 @@
 
 const express = require('express')
 const request = require('request')
+const moment = require('moment')
 
 require('dotenv').config()
 
@@ -46,7 +47,10 @@ const self = module.exports = {
   getData: (stock) => {
     return new Promise((resolve, reject) => {
 
-      const url = quandlApi.api_url + stock + '/data.json?api_key=' + quandlApi.api_key + '&start_date=2017-01-01'
+      const startDate = moment().subtract(7, 'days').format('YYYY-MM-DD')
+      const endDate = moment().format('YYYY-MM-DD')
+      
+      const url = quandlApi.api_url + stock + '/data.json?api_key=' + quandlApi.api_key + '&start_date=' + startDate + '&end_date=' + endDate
 
       request(url, (error, response, body) => {
 
@@ -63,7 +67,7 @@ const self = module.exports = {
             return
           }
 
-          console.log(data)
+          console.log(data.dataset_data.data)
 
           if (typeof data.dataset_data === 'undefined' || data.dataset_data === null) {
             resolve({

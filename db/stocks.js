@@ -149,9 +149,7 @@ const self = module.exports = {
 
     MongoClient.connect(dbUrl, (err, db) => {
       
-      if (err) {
-        return callback(err)
-      } 
+      if (err) return callback(err)
       
       db.collection('stocks').insertOne({
         _id: shortid.generate(),
