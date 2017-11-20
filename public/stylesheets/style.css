@@ -33,6 +33,7 @@ img.responsive-image {
 #main ul {
   padding: 0;
   list-style-position: inside;
+  list-style-type: none;
 }
 
 #main ul li {
@@ -41,6 +42,10 @@ img.responsive-image {
 
 #main ul li:last-of-type {
   margin-bottom: 0;
+}
+
+#main ul#stocks-list a.btn {
+  margin-left: 15px;
 }
 
 #main form ul {
@@ -55,6 +60,16 @@ img.responsive-image {
 #main #message-info {
   display: none;
   padding: 15px;
+}
+
+#main #stock-adder {
+  margin: 0;
+  padding: 30px 0;
+}
+
+#main #stock-adder label,
+#main #stock-adder input {
+  margin-bottom: 15px;
 }
 
 #footer {

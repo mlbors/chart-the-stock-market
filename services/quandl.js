@@ -50,7 +50,9 @@ const self = module.exports = {
       const startDate = moment().subtract(7, 'days').format('YYYY-MM-DD')
       const endDate = moment().format('YYYY-MM-DD')
       
-      const url = quandlApi.api_url + stock + '/data.json?api_key=' + quandlApi.api_key + '&start_date=' + startDate + '&end_date=' + endDate
+      const url = quandlApi.api_url + stock + '/data.json?api_key=' + quandlApi.api_key + '&start_date=' + startDate + '&end_date=' + endDate + '&column_index=1&order=asc'
+
+      console.log(url)
 
       request(url, (error, response, body) => {
 

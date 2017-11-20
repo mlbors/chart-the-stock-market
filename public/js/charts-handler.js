@@ -14,9 +14,10 @@
 
 /*
  * @var String _id chart's id
+ * @var Bool _userAuth is current user authenticated
  */
 
-const ChartsHandler = (id) => {
+const ChartsHandler = (id, userAuth) => {
 
   /**********/
   /********** VARS **********/
@@ -27,11 +28,13 @@ const ChartsHandler = (id) => {
    * @var Object _ctx context
    * @var Object _chart the chart
    * @var Object _socket
+   * @var Bool _userAuth is current user authenticated
    */
 
   let _id = id
   let _ctx = $('#' + _id)
   let _chart
+  let _userAuth = userAuth
   let _socket = io.connect(window.location.origin)
 
   /************************************************************/
@@ -108,11 +111,18 @@ const ChartsHandler = (id) => {
 
   _removeElement = (label, data) => {
 
-    const removalIndex = _chart.data.datasets.indexOf(data)
+    let removalIndex = -1
+
+    for (let i = 0; i < _chart.data.datasets.length; i++) {
+      if (_chart.data.datasets[i].label === label) {
+        removalIndex = i
+      }
+    }
+
     if (removalIndex >= 0) {
       _chart.data.datasets.splice(removalIndex, 1)
-      _chart.data.labels.splice(removalIndex, 1)
     }
+    _chart.update()
 
   }
 
@@ -130,11 +140,13 @@ const ChartsHandler = (id) => {
 
   _updateChart = (label, data) => {
 
-    _chart.data.labels.push(label)
-    _chart.data.datasets.forEach((dataset) => {
-      dataset.borderColor = _generateColor()
-      dataset.borderWidth = 1
-      dataset.data.push(data)
+    _chart.data.datasets.push({
+      data: data,
+      borderColor: _generateColor(),
+      borderWidth: 1,
+      backgroundColor: 'transparent',
+      fill: false,
+      label: label
     })
     _chart.update()
 
@@ -154,14 +166,34 @@ const ChartsHandler = (id) => {
   _displayChart = (data) => {
     
     const colors = _generateColors(data.labels.length)
-    data.datasets[0].borderColor = colors
-    data.datasets[0].borderWidth = 1
 
-    console.log(data)
+    let chartData = {datasets:[]}
+
+    for (let i = 0; i < data.labels.length; i ++) {
+      chartData.datasets.push({
+        data: data.datasets[i],
+        borderColor: colors[i],
+        borderWidth: 1,
+        backgroundColor: 'transparent',
+        fill: false,
+        label: data.labels[i]
+      })
+    }
+
+    chartData.labels = data.datasets[0].map((d) => d.x)
 
     _chart = new Chart(_ctx, {
       type: 'line',
-      data: data
+      data: chartData,
+      xAxisID: 'Date',
+      yAxisID: 'Value',
+      options: {
+        scales: {
+          yAxes: [{
+              stacked: true
+          }]
+        }
+      }
     })
 
   }
@@ -199,14 +231,13 @@ const ChartsHandler = (id) => {
 
   /*
    * @var String stock
-   * @var Bool auth
    */
 
-  _addListItem = (stock, auth) => {
+  _addListItem = (stock) => {
 
     let str = '<li id=' + stock + '>'
     str += stock
-    if (auth) {
+    if (_userAuth) {
       str += '<a class="btn btn-default action" href="#" data-action="delete" data-stock="' + stock + '">Remove stock</a>'
     }
     str +='</li>'
@@ -250,15 +281,14 @@ const ChartsHandler = (id) => {
   /*
    * @var String action
    * @var String stock
-   * @var Bool auth
    */
 
-  _updateList = (action, stock, auth) => {
+  _updateList = (action, stock) => {
 
     switch(action) {
 
       case 'add':
-        _addListItem(stock, auth)
+        _addListItem(stock)
         break
 
       case 'delete':
@@ -278,7 +308,7 @@ const ChartsHandler = (id) => {
 
   _listenAddEvent = () => {
     _socket.on('add', (data) => {
-      _updateList('add', data.stock, data.auth)
+      _updateList('add', data.stock)
       _updateChart(data.stock, data.data) 
     })
   }
@@ -292,7 +322,7 @@ const ChartsHandler = (id) => {
 
   _listenRemoveEvent = () => {
     _socket.on('delete', (data) => {
-      _updateList('delete', data.stock, data.auth)
+      _updateList('delete', data.stock)
       _removeElement(data.stock, data.data) 
     })
   }

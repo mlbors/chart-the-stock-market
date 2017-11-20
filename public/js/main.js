@@ -22,11 +22,13 @@ const Main = () => {
    * @var Object _actionsHandler object that handles actions on buttons
    * @var Object _chartsHandlerr Object that handles charts in front end
    * @var Object _uiHandler Object that handles UI
+   * @var Object _usersHandler Object that handles user's data
    */
 
   let _actionsHandler = ActionsHandler()
   let _chartsHandler
   let _uiHandler = UIHandler()
+  let _usersHandler = UsersHandler()
 
   /************************************************************/
   /************************************************************/
@@ -53,14 +55,23 @@ const Main = () => {
   _ready = () => {
 
     $(document).ready(() => {
-      _actionsHandler.init()
-      _uiHandler.init()
 
-      if ($('#main-chart').length > 0) {
-        _chartsHandler = ChartsHandler('main-chart')
-        _chartsHandler.init()
-        _chartsHandler.generateChart()
-      }
+      _usersHandler.getStatus().then((userData) => {
+
+        _actionsHandler.init()
+        _uiHandler.init()
+  
+        if ($('#main-chart').length > 0) {
+          _chartsHandler = ChartsHandler('main-chart', userData.auth)
+          _chartsHandler.init()
+          _chartsHandler.generateChart()
+        }
+
+      }).catch((e) => {
+        console.warn('Error while getting user data...')
+        console.error(err)
+        return false
+      })
 
     })
 

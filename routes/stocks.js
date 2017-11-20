@@ -31,7 +31,15 @@ router.get('/', (req, res) => {
     let chartData, chartLabels
 
     if (typeof results !== 'undefined' && results !== null && results !== '') {
-      chartData = results.map((d) => d.data)
+      chartData = results.map((d) => {
+        const itemData = d.data.map((i) => {
+          return {
+            x: i[0],
+            y: i[1]
+          }
+        })
+        return itemData
+      })
       chartLabels = results.map((d) => d.name)
     }
 
@@ -39,9 +47,7 @@ router.get('/', (req, res) => {
       auth: req.isAuthenticated(),
       error: err,
       chartData: {
-        datasets:[{
-          data: chartData
-        }],
+        datasets: chartData,
         labels: chartLabels
       },
       stocks: chartLabels
@@ -69,25 +75,37 @@ router.post('/add', (req, res) => {
       auth: req.isAuthenticated(),
       error: null
     })
+    return
   }
 
   dbStocks.findByName(stock, (err, result) => {
 
     if (result !== null) {
       res.send({
+        stock: stock,
         data: null,
         info: 'Stock already added',
         auth: req.isAuthenticated(),
         error: err
       })
+      return
     }
 
     quandlService.getData(stock).then((results) => {
 
       if (results !== null && results.data !== null) {
         dbStocks.addStock(stock, results.data, (err, result) => {
+
+          const chartData = results.data.map((d) => {
+            return {
+              x: d[0],
+              y: d[1]
+            }
+          })
+
           res.send({
-            data: results.data,
+            stock: stock,
+            data: chartData,
             info: null,
             auth: req.isAuthenticated(),
             error: err
@@ -95,6 +113,7 @@ router.post('/add', (req, res) => {
         })
       } else {
         res.send({
+          stock: stock,
           data: null,
           info: 'Nothing to add',
           auth: req.isAuthenticated(),
@@ -104,6 +123,7 @@ router.post('/add', (req, res) => {
 
     }).catch((err) => {
       res.send({
+        stock: stock,
         data: null,
         info: null,
         auth: req.isAuthenticated(),
@@ -130,6 +150,7 @@ router.delete('/delete', (req, res) => {
   dbStocks.findByName(stock, (err, result) => {
     dbStocks.deleteStock(stock, (err, info) => {
       res.send({
+        stock: stock,
         data: result.data,
         info: null,
         auth: req.isAuthenticated(),
