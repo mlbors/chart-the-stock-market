@@ -35,7 +35,7 @@ const ChartsHandler = (id, userAuth) => {
   let _ctx = $('#' + _id)
   let _chart
   let _userAuth = userAuth
-  let _socket = io.connect(window.location.origin)
+  let _socket = io()
 
   /************************************************************/
   /************************************************************/

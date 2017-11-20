@@ -22,7 +22,7 @@ const ActionsHandler = () => {
    * @var Object _socket
    */
 
-  let _socket = io.connect(window.location.origin)
+  let _socket = io.connect()
 
   /************************************************************/
   /************************************************************/
