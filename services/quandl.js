@@ -69,8 +69,6 @@ const self = module.exports = {
             return
           }
 
-          console.log(data.dataset_data.data)
-
           if (typeof data.dataset_data === 'undefined' || data.dataset_data === null) {
             resolve({
               data: null,
